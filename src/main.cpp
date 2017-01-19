@@ -1,15 +1,16 @@
 #include <pybind11/pybind11.h>
+#include <pybind11/numpy.h>
 namespace py = pybind11;
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/python/pyapi.hpp>
 
-PyObject * draw_rect(PyObject * in) {
+PyObject * draw_rect(py::array in) {
     
     cv::Mat mat;
     
-    if (!PyOpenCV_NdarrayToMat(in, mat, "in"))
+    if (!PyOpenCV_NdarrayToMat(in.ptr(), mat, "in"))
         return NULL;
     
     cv::Point pt1, pt2;
@@ -24,11 +25,10 @@ PyObject * draw_rect(PyObject * in) {
 }
 
 
-PYBIND11_PLUGIN(python_example) {
+PYBIND11_PLUGIN(test_package) {
     
-    import_opencv();
     
-    py::module m("python_example");
+    py::module m("test_package");
     
     m.def("draw_rect", &draw_rect);
 
@@ -38,5 +38,6 @@ PYBIND11_PLUGIN(python_example) {
     m.attr("__version__") = py::str("dev");
 #endif
 
+    import_opencv();
     return m.ptr();
 }

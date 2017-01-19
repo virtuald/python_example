@@ -21,6 +21,7 @@ class get_pybind_include(object):
         import pybind11
         return pybind11.get_include(self.user)
 
+import cv2
 
 ext_modules = [
     Extension(
@@ -33,7 +34,10 @@ ext_modules = [
             "include",
             "/home/virtuald/src/frc/ext/opencv-python/opencv/build/prefix/include",
         ],
-        language='c++'
+        library_dirs=[cv2.distutils.get_lib_path()],
+        libraries=['opencv_core', 'opencv_imgproc'],
+        language='c++',
+        runtime_library_dirs=['$ORIGIN/cv2'],
     ),
 ]
 
